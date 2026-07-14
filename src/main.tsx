@@ -30,6 +30,10 @@ function App() {
   // Read to Me — plays the pre-rendered chapter audio (Piper Kathleen-low, rendered by scripts/render-audio.mjs).
   // If a chapter has no audio.src yet, falls back to browser speechSynthesis so the mode still works during development.
   const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioCtxRef = useRef<AudioContext | null>(null)
+  const analyserRef = useRef<AnalyserNode | null>(null)
+  const sourceRef = useRef<MediaElementAudioSourceNode | null>(null)
+  const barsRef = useRef<HTMLDivElement | null>(null)
 
   useEffect(() => {
     if (screen !== 'reader' || mode !== 'aloud') return
@@ -41,15 +45,60 @@ function App() {
       else setChapter((index) => index + 1)
     }
     audioRef.current = audio
-    return () => { audio.pause(); audioRef.current = null }
+
+    try {
+      const AudioCtx = window.AudioContext ?? (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext
+      if (AudioCtx) {
+        if (!audioCtxRef.current) audioCtxRef.current = new AudioCtx()
+        const ctx = audioCtxRef.current
+        if (!analyserRef.current) {
+          const analyser = ctx.createAnalyser()
+          analyser.fftSize = 128
+          analyser.smoothingTimeConstant = 0.7
+          analyser.connect(ctx.destination)
+          analyserRef.current = analyser
+        }
+        const source = ctx.createMediaElementSource(audio)
+        source.connect(analyserRef.current)
+        sourceRef.current = source
+      }
+    } catch { /* visualization unavailable — audio still plays via the element */ }
+
+    return () => {
+      audio.pause()
+      audioRef.current = null
+      sourceRef.current?.disconnect()
+      sourceRef.current = null
+    }
   }, [screen, mode, chapter, storyId])
 
   useEffect(() => {
     const audio = audioRef.current
     if (!audio) return
     if (paused) audio.pause()
-    else audio.play().catch(() => {})
+    else { audioCtxRef.current?.resume().catch(() => {}); audio.play().catch(() => {}) }
   }, [paused, chapter, screen, mode])
+
+  // Audio-reactive visualization — reads the analyser each frame and drives per-bar CSS heights.
+  useEffect(() => {
+    if (screen !== 'reader' || mode !== 'aloud' || paused) return
+    const analyser = analyserRef.current
+    const container = barsRef.current
+    if (!analyser || !container) return
+    const bars = Array.from(container.querySelectorAll<HTMLElement>('b'))
+    if (!bars.length) return
+    const data = new Uint8Array(analyser.frequencyBinCount)
+    let alive = true
+    const draw = () => {
+      if (!alive) return
+      analyser.getByteFrequencyData(data)
+      const step = Math.max(1, Math.floor(data.length / bars.length))
+      bars.forEach((bar, i) => bar.style.setProperty('--h', (data[i * step] / 255).toFixed(3)))
+      requestAnimationFrame(draw)
+    }
+    draw()
+    return () => { alive = false; bars.forEach((bar) => bar.style.setProperty('--h', '0')) }
+  }, [screen, mode, chapter, paused, storyId])
 
   useEffect(() => {
     if (screen !== 'reader' || mode !== 'aloud' || paused) return
@@ -94,7 +143,7 @@ function App() {
       </article>
       <div className="reader-nav">
         <button className={`nav-arrow ${isFirst ? 'hidden' : ''}`} onClick={goPrev} aria-label="Previous chapter" aria-hidden={isFirst}>‹</button>
-        {mode === 'aloud' && !paused && <div className="wave" aria-label="Narration playing"><b /><b /><b /><b /><b /></div>}
+        {mode === 'aloud' && !paused && <div className="wave" ref={barsRef} aria-label="Narration playing">{Array.from({ length: 16 }).map((_, i) => <b key={i} />)}</div>}
         {isLast
           ? <button className="nav-continue" onClick={() => { pauseForManualNav(); setScreen('reflect') }}>Continue to Reflect →</button>
           : <button className="nav-arrow" onClick={goNext} aria-label="Next chapter">›</button>}
