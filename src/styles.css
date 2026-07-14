@@ -46,7 +46,7 @@
 .board-grid { display:grid; gap:20px; grid-template-columns:1fr; margin-top:8px; }
 .board-card { text-align:left; border:0; background:linear-gradient(145deg,#f8f0df,#eee0c5); padding:14px; border-radius:20px; box-shadow:0 14px 36px #6d4b291a, 0 2px 3px #2b1d140d; display:flex; flex-direction:column; gap:12px; color:var(--ink); cursor:pointer; transition:transform 160ms ease-out, box-shadow 160ms ease-out; }
 .board-card:hover { transform:translateY(-2px); box-shadow:0 18px 42px #6d4b2926, 0 3px 4px #2b1d1414; }
-.board-card .scene.cover { position:relative; height:50vh; margin:0; border-radius:14px; }
+.board-card .scene.cover { position:relative; height:50dvh; margin:0; border-radius:14px; overflow:hidden; }
 .card-badge { position:absolute; top:12px; right:12px; background:#fdf4e3ea; }
 .card-title { font:600 22px/1.2 Fraunces,serif; margin:6px 6px 0; }
 .card-desc { color:var(--soft); font-size:15px; margin:0 6px 6px; }
