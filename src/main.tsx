@@ -3,11 +3,19 @@ import { createRoot } from 'react-dom/client'
 import { stories } from './content/stories'
 import './styles.css'
 
-type Screen = 'login' | 'board' | 'parent-card' | 'reader' | 'reflect' | 'mission' | 'close' | 'journal'
+type Screen = 'login' | 'parent-gate' | 'child-profile' | 'ritual' | 'handoff' | 'board' | 'parent-card' | 'reader' | 'reflect' | 'mission' | 'close' | 'journal'
 type MissionStatus = 'logged' | 'later' | 'skipped' | null
 type ReadingMode = 'parent' | 'aloud'
+type Age = 5 | 6 | 7 | 8
+type RitualTime = 'bedtime' | 'weekend' | 'none'
+type Profile = { name: string; age: Age }
+type Ritual = { time: RitualTime; reminder: boolean }
+type GateNext = 'onboarding' | 'journal' | null
 
 const journalKey = 'anvaya-journal-v1'
+const profileKey = 'anvaya-profile-v1'
+const ritualKey = 'anvaya-ritual-v1'
+
 const hideBrokenImage = (event: React.SyntheticEvent<HTMLImageElement>) => { event.currentTarget.style.visibility = 'hidden' }
 
 const IconChevronLeft = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
@@ -15,9 +23,59 @@ const IconChevronRight = () => <svg width="18" height="18" viewBox="0 0 24 24" f
 const IconClose = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" /></svg>
 const IconJournal = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 3h12a2 2 0 0 1 2 2v16l-8-4-8 4V5a2 2 0 0 1 2-2z" /></svg>
 const IconPlay = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+const IconMoon = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" /></svg>
+const IconSun = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+const IconClock = () => <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10" /><path d="M12 6v6l4 2" /></svg>
+
+const HOLD_DURATION_MS = 2500
+const RING_CIRCUMFERENCE = 2 * Math.PI * 46
+
+function ParentGate({ onSuccess, onCancel }: { onSuccess: () => void; onCancel: () => void }) {
+  const [holding, setHolding] = useState(false)
+  const [progress, setProgress] = useState(0)
+  const onSuccessRef = useRef(onSuccess)
+  useEffect(() => { onSuccessRef.current = onSuccess }, [onSuccess])
+
+  useEffect(() => {
+    if (!holding) { setProgress(0); return }
+    const start = performance.now()
+    let raf = 0
+    const tick = () => {
+      const elapsed = performance.now() - start
+      const p = Math.min(1, elapsed / HOLD_DURATION_MS)
+      setProgress(p)
+      if (p >= 1) { onSuccessRef.current(); return }
+      raf = requestAnimationFrame(tick)
+    }
+    raf = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(raf)
+  }, [holding])
+
+  return <div className="gate-overlay" role="dialog" aria-modal="true">
+    <button className="gate-cancel" onClick={onCancel} aria-label="Cancel"><IconClose /></button>
+    <div className="gate-inner">
+      <button
+        className={`gate-button ${holding ? 'holding' : ''}`}
+        onPointerDown={() => setHolding(true)}
+        onPointerUp={() => setHolding(false)}
+        onPointerLeave={() => setHolding(false)}
+        onPointerCancel={() => setHolding(false)}
+        aria-label="Hold to enter Parent Mode"
+      >
+        <svg className="gate-ring" viewBox="0 0 100 100" aria-hidden="true">
+          <circle cx="50" cy="50" r="46" strokeDasharray={`${progress * RING_CIRCUMFERENCE} ${RING_CIRCUMFERENCE}`} />
+        </svg>
+        <span className="gate-label">Hold</span>
+      </button>
+      <p className="gate-prompt">Hold to enter Parent Mode</p>
+      <p className="gate-sub">We do this so little hands don't skip ahead.</p>
+    </div>
+  </div>
+}
 
 function App() {
-  const [screen, setScreen] = useState<Screen>('login')
+  const initialScreen: Screen = localStorage.getItem(profileKey) ? 'board' : 'login'
+  const [screen, setScreen] = useState<Screen>(initialScreen)
   const [storyId, setStoryId] = useState<string>(stories[0].id)
   const [chapter, setChapter] = useState(0)
   const [tipOpen, setTipOpen] = useState(false)
@@ -26,10 +84,17 @@ function App() {
   const [mode, setMode] = useState<ReadingMode>('parent')
   const [paused, setPaused] = useState(false)
   const [journals, setJournals] = useState<string[]>(() => JSON.parse(localStorage.getItem(journalKey) ?? '[]'))
+  const [profile, setProfile] = useState<Profile | null>(() => JSON.parse(localStorage.getItem(profileKey) ?? 'null'))
+  const [ritual, setRitual] = useState<Ritual | null>(() => JSON.parse(localStorage.getItem(ritualKey) ?? 'null'))
+  const [gateNext, setGateNext] = useState<GateNext>(null)
+  const [nameDraft, setNameDraft] = useState('')
+  const [ageDraft, setAgeDraft] = useState<Age | null>(null)
+  const [timeDraft, setTimeDraft] = useState<RitualTime>('bedtime')
+  const [reminderDraft, setReminderDraft] = useState(false)
 
-  useEffect(() => {
-    localStorage.setItem(journalKey, JSON.stringify(journals))
-  }, [journals])
+  useEffect(() => { localStorage.setItem(journalKey, JSON.stringify(journals)) }, [journals])
+  useEffect(() => { if (profile) localStorage.setItem(profileKey, JSON.stringify(profile)) }, [profile])
+  useEffect(() => { if (ritual) localStorage.setItem(ritualKey, JSON.stringify(ritual)) }, [ritual])
 
   const story = stories.find((item) => item.id === storyId) ?? stories[0]
 
@@ -85,7 +150,6 @@ function App() {
     else { audioCtxRef.current?.resume().catch(() => {}); audio.play().catch(() => {}) }
   }, [paused, chapter, screen, mode])
 
-  // Audio-reactive visualization — reads the analyser each frame and drives per-bar CSS heights.
   useEffect(() => {
     if (screen !== 'reader' || mode !== 'aloud' || paused) return
     const analyser = analyserRef.current
@@ -124,6 +188,33 @@ function App() {
     return () => speech.cancel()
   }, [screen, mode, chapter, paused, storyId])
 
+  const startOnboarding = () => { setGateNext('onboarding'); setScreen('parent-gate') }
+  const openJournal = () => { setGateNext('journal'); setScreen('parent-gate') }
+  const onGateSuccess = () => {
+    const target = gateNext
+    setGateNext(null)
+    if (target === 'onboarding') setScreen('child-profile')
+    else if (target === 'journal') setScreen('journal')
+    else setScreen('board')
+  }
+  const onGateCancel = () => {
+    const target = gateNext
+    setGateNext(null)
+    setScreen(target === 'onboarding' ? 'login' : 'board')
+  }
+  const saveProfile = () => {
+    if (!nameDraft.trim() || !ageDraft) return
+    setProfile({ name: nameDraft.trim(), age: ageDraft })
+    setScreen('ritual')
+  }
+  const saveRitual = () => {
+    setRitual({ time: timeDraft, reminder: reminderDraft })
+    setScreen('handoff')
+  }
+  const beginFirstStory = () => {
+    setStoryId(stories[0].id); setChapter(0); setNote(''); setStatus(null); setTipOpen(false); setPaused(false)
+    setScreen('parent-card')
+  }
   const openStory = (id: string) => { setStoryId(id); setChapter(0); setNote(''); setStatus(null); setTipOpen(false); setPaused(false); setScreen('parent-card') }
   const goToReader = () => { setChapter(0); setPaused(false); setScreen('reader') }
   const pauseForManualNav = () => { if (mode === 'aloud') setPaused(true) }
@@ -157,17 +248,75 @@ function App() {
     </main>
   }
 
+  if (screen === 'parent-gate') return <ParentGate onSuccess={onGateSuccess} onCancel={onGateCancel} />
+
   return <main className="app-shell">
     {screen === 'login' && <section className="page login">
       <div className="wordmark">Anvaya</div>
       <div className="login-hero"><img src="/hero.png" alt="A parent-child ritual, one story at a time" onError={hideBrokenImage} /></div>
       <p className="login-tag">A story, a talk, a small act — every week.</p>
-      <button className="primary" onClick={() => setScreen('board')}>Get Started</button>
+      <button className="primary" onClick={startOnboarding}>Get Started</button>
+      <p className="fine-print">Made for parents. Made in India.</p>
+    </section>}
+
+    {screen === 'child-profile' && <section className="page onboarding">
+      <header><button className="back" onClick={() => setScreen('login')} aria-label="Back"><IconChevronLeft /></button><span /><span /></header>
+      <h1>Who's this for?</h1>
+      <p className="muted">Just a first name and age. Nothing else.</p>
+      <label className="field">
+        <span className="eyebrow">First name</span>
+        <input className="text-input" type="text" value={nameDraft} onChange={(event) => setNameDraft(event.target.value)} placeholder="e.g. Aarav" autoFocus />
+      </label>
+      <div className="field">
+        <span className="eyebrow">Age</span>
+        <div className="age-picker">
+          {[5, 6, 7, 8].map((age) => (
+            <button key={age} className={`age-btn ${ageDraft === age ? 'active' : ''}`} onClick={() => setAgeDraft(age as Age)}>{age}</button>
+          ))}
+        </div>
+      </div>
+      <div className="sticky-actions">
+        <button className="primary" onClick={saveProfile} disabled={!nameDraft.trim() || !ageDraft}>Continue</button>
+      </div>
+    </section>}
+
+    {screen === 'ritual' && <section className="page onboarding">
+      <header><button className="back" onClick={() => setScreen('child-profile')} aria-label="Back"><IconChevronLeft /></button><span /><span /></header>
+      <h1>When's your usual story time?</h1>
+      <p className="muted">This helps us set the rhythm. You can change it later.</p>
+      <div className="ritual-cards">
+        {([
+          { id: 'bedtime' as const, title: 'Bedtime', sub: '7–9 PM most evenings', icon: <IconMoon /> },
+          { id: 'weekend' as const, title: 'Weekend mornings', sub: 'Saturdays and Sundays', icon: <IconSun /> },
+          { id: 'none' as const, title: 'No fixed time', sub: "We'll figure it out", icon: <IconClock /> }
+        ]).map((option) => (
+          <button key={option.id} className={`ritual-card ${timeDraft === option.id ? 'active' : ''}`} onClick={() => setTimeDraft(option.id)}>
+            {option.icon}
+            <span className="ritual-text"><span className="ritual-title">{option.title}</span><span className="ritual-sub">{option.sub}</span></span>
+          </button>
+        ))}
+      </div>
+      <label className="toggle">
+        <input type="checkbox" checked={reminderDraft} onChange={(event) => setReminderDraft(event.target.checked)} />
+        <span className="toggle-slider" />
+        <span>Send me a gentle reminder</span>
+      </label>
+      <div className="sticky-actions">
+        <button className="primary" onClick={saveRitual}>Continue</button>
+      </div>
+    </section>}
+
+    {screen === 'handoff' && <section className="page login">
+      <div className="handoff-hero"><img src="/hero.png" alt="A crow and a clay pitcher" onError={hideBrokenImage} /></div>
+      <h1>Your first story is ready.</h1>
+      <p className="login-tag">It's called <em>The Crow and the Pitcher</em>. About five minutes reading, five minutes talking together{profile?.name ? `, with ${profile.name}` : ''}.</p>
+      <button className="primary" onClick={beginFirstStory}>Begin</button>
+      <button className="ghost" onClick={() => setScreen('board')}>Maybe later</button>
     </section>}
 
     {screen === 'board' && <section className="page board">
-      <header><div className="wordmark">Anvaya</div><button className="icon-button" onClick={() => setScreen('journal')} aria-label="Open Value Journal"><IconJournal /></button></header>
-      <span className="eyebrow">STORY BOARD</span>
+      <header><div className="wordmark">Anvaya</div><button className="icon-button" onClick={openJournal} aria-label="Open Value Journal"><IconJournal /></button></header>
+      <span className="eyebrow">{profile?.name ? `For ${profile.name}` : "Today's story"}</span>
       <h1>Choose today's story</h1>
       <p className="muted">Sit together. Pick one. About 15 minutes.</p>
       <div className="board-grid">
@@ -200,7 +349,7 @@ function App() {
 
     {screen === 'close' && <section className="page close"><div className="map"><i className="node unlocked" /><i className="node unlocked" /><i className="node unlocked" /><i className="node" /><i className="node" /></div><h1>See you next time.</h1><p className="muted">{status === 'logged' ? "Great — you've added to your Value Journal." : status === 'later' ? "We've saved the mission. You can log it from Parent Mode when it's done." : "No mission today. Come back for the next story whenever you're ready."}</p><button className="ghost close-button" onClick={() => setScreen('board')}>Close</button></section>}
 
-    {screen === 'journal' && <section className="page journal"><header><button className="back" onClick={() => setScreen('board')} aria-label="Back"><IconChevronLeft /></button><strong>Value Journal</strong><span /></header><span className="badge">Wisdom</span><h1>Your family's small acts</h1>{journals.length ? <div className="journal-list">{journals.map((entry, index) => <article key={`${entry}-${index}`}><span className="eyebrow">WISDOM</span><p>{entry}</p></article>)}</div> : <div className="empty"><p>Your first mission will land here.</p><p className="muted">Complete a mission to begin your family journal.</p></div>}</section>}
+    {screen === 'journal' && <section className="page journal"><header><button className="back" onClick={() => setScreen('board')} aria-label="Back"><IconChevronLeft /></button><strong>Value Journal</strong><span /></header><span className="badge">Wisdom</span><h1>{profile?.name ? `${profile.name}'s small acts` : "Your family's small acts"}</h1>{journals.length ? <div className="journal-list">{journals.map((entry, index) => <article key={`${entry}-${index}`}><span className="eyebrow">WISDOM</span><p>{entry}</p></article>)}</div> : <div className="empty"><p>Your first mission will land here.</p><p className="muted">Complete a mission to begin your family journal.</p></div>}</section>}
   </main>
 }
 
