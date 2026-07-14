@@ -49,7 +49,7 @@ function App() {
     if (!audio) return
     if (paused) audio.pause()
     else audio.play().catch(() => {})
-  }, [paused, chapter])
+  }, [paused, chapter, screen, mode])
 
   useEffect(() => {
     if (screen !== 'reader' || mode !== 'aloud' || paused) return
