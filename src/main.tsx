@@ -105,7 +105,7 @@ function App() {
   return <main className="app-shell">
     {screen === 'login' && <section className="page login">
       <div className="wordmark login-mark">Anvaya</div>
-      <div className="scene login-hero"><img src={stories[0].cover.src} alt="A parent-child ritual, one story at a time" onError={hideBrokenImage} /></div>
+      <div className="scene login-hero"><img src="/hero.png" alt="A parent-child ritual, one story at a time" onError={hideBrokenImage} /></div>
       <p className="login-tag">A story, a talk, a small act — every week.</p>
       <button className="primary" onClick={() => setScreen('board')}>Get Started</button>
     </section>}
