@@ -15,6 +15,14 @@
     "ageBand": { "const": "5-8" },
     "estimatedDurationSec": { "type": "integer", "minimum": 60 },
     "description": { "type": "string", "minLength": 1 },
+    "coverImage": {
+      "type": "object",
+      "required": ["src", "alt"],
+      "properties": {
+        "src": { "type": "string", "pattern": "^/content/images/.+\\.(webp|avif|jpg|jpeg|png)$" },
+        "alt": { "type": "string", "minLength": 1 }
+      }
+    },
     "chapters": {
       "type": "array",
       "minItems": 1,
