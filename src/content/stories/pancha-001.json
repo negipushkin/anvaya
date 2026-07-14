@@ -9,7 +9,6 @@
   "ageBand": "5-8",
   "estimatedDurationSec": 480,
   "description": "A small crow, a tall pitcher, and one very clever idea. About 5 minutes reading, 5 minutes talking.",
-  "coverImage": { "src": "/content/images/pancha-001/main-card.png", "alt": "The Crow and the Pitcher — an illustrated story card" },
   "chapters": [
     {
       "id": "pancha-001-c01",
