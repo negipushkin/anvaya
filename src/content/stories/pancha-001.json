@@ -1,0 +1,94 @@
+{
+  "schemaVersion": "1.0",
+  "storyId": "pancha-001",
+  "version": "1.0.0",
+  "status": "published",
+  "title": "The Crow and the Pitcher",
+  "tradition": "Panchatantra",
+  "value": "Wisdom",
+  "ageBand": "5-8",
+  "estimatedDurationSec": 480,
+  "description": "A small crow, a tall pitcher, and one very clever idea. About 5 minutes reading, 5 minutes talking.",
+  "chapters": [
+    {
+      "id": "pancha-001-c01",
+      "order": 1,
+      "title": "Opening",
+      "text": "It was the hottest day of the summer. The rivers had dried up, the ponds had turned to dust, and every animal in the forest was searching for water. Among them was a small black crow, flying tired circles under the burning sun.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c01.png", "alt": "A tired crow flies above a dry forest under a burning summer sun." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c01.mp3", "durationSec": 25.94 }
+    },
+    {
+      "id": "pancha-001-c02",
+      "order": 2,
+      "title": "Setup",
+      "text": "The crow had been flying since morning. His wings ached, his throat was dry as bark, and everywhere he looked — nothing. Not a drop. He had to find water soon, or he wouldn't make it home.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c02.png", "alt": "The crow continues over cracked earth, searching for water." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c02.mp3", "durationSec": 22.83 }
+    },
+    {
+      "id": "pancha-001-c03",
+      "order": 3,
+      "title": "Inciting",
+      "text": "Just as he was losing hope, the crow saw something wonderful — a tall clay pitcher, sitting quietly in the corner of a garden. He flew down at once, his heart lifting. Water. Finally, water.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c03.png", "alt": "A tall clay pitcher waits in the corner of a garden." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c03.mp3", "durationSec": 25.11 }
+    },
+    {
+      "id": "pancha-001-c04",
+      "order": 4,
+      "title": "First attempt",
+      "text": "But when the crow dipped his beak inside, he couldn't reach the water. The pitcher was too tall, and the water was too low. He stretched. He strained. He tipped his head sideways. Nothing worked.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c04.png", "alt": "The crow stretches his beak toward water deep inside the pitcher." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c04.mp3", "durationSec": 24.04 }
+    },
+    {
+      "id": "pancha-001-c05",
+      "order": 5,
+      "title": "Complication",
+      "text": "The crow tried to knock the pitcher over, pushing with all his tiny weight. But the pitcher was heavy, and the crow was small. He sat down beside it, more thirsty than before, and thought hard. There had to be a way.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c05.png", "alt": "The small crow tries to push the heavy clay pitcher." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c05.mp3", "durationSec": 23.90 }
+    },
+    {
+      "id": "pancha-001-c06",
+      "order": 6,
+      "title": "Turn",
+      "text": "Then the crow noticed something. A small pebble, lying near his feet. He looked at the pebble. He looked at the pitcher. And slowly, a very clever idea began to take shape in his mind.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c06.png", "alt": "A pebble beside the crow catches the warm dusk light." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c06.mp3", "durationSec": 19.59 }
+    },
+    {
+      "id": "pancha-001-c07",
+      "order": 7,
+      "title": "Resolution",
+      "text": "One by one, the crow picked up pebbles and dropped them into the pitcher. Plop. Plop. Plop. With each pebble, the water rose a little higher. Higher, and higher, and higher — until at last, it reached the very top.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c07.png", "alt": "Pebbles plop into the pitcher as water rises towards the top." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c07.mp3", "durationSec": 25.94 }
+    },
+    {
+      "id": "pancha-001-c08",
+      "order": 8,
+      "title": "Landing",
+      "text": "The crow drank his fill, feeling the cool water reach every corner of his tired body. He hadn't been the strongest. He hadn't been the biggest. But he had used his mind — and sometimes, that is the greatest strength of all.",
+      "image": { "src": "/content/images/pancha-001/pancha-001-c08.png", "alt": "The crow drinks peacefully beside the full pitcher." },
+      "audio": { "src": "/content/audio/pancha-001/pancha-001-c08.mp3", "durationSec": 25.94 }
+    }
+  ],
+  "parentCard": {
+    "prompts": [
+      "The crow was small and the pitcher was heavy. What did he use instead of strength?",
+      "Can you think of a time you couldn't do something the big way, so you tried a different way?"
+    ],
+    "tip": "Guide from the object to the thinking. If your child says ‘pebbles,’ ask what made him think of them.",
+    "watchOut": "Turning it into a science lesson about displacement."
+  },
+  "missions": [
+    {
+      "id": "pancha-001-mission-a",
+      "variant": "A",
+      "text": "Find one thing at home that's a little too hard for you, and figure out a clever way to do it without asking a grown-up for the muscle. Show us what you tried.",
+      "expiresAfterHours": 24
+    }
+  ]
+}

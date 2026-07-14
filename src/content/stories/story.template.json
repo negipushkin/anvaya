@@ -1,0 +1,65 @@
+{
+  "$schema": "../story.schema.json",
+  "schemaVersion": "1.0",
+  "storyId": "folk-003",
+  "version": "1.0.0",
+  "status": "draft",
+  "title": "Story title",
+  "tradition": "Panchatantra",
+  "value": "Patience",
+  "ageBand": "5-8",
+  "estimatedDurationSec": 480,
+  "description": "One sentence for the Today screen. About 5 minutes reading, 5 minutes talking.",
+  "chapters": [
+    {
+      "id": "folk-003-c01",
+      "order": 1,
+      "title": "Opening",
+      "text": "Exact narration for chapter one goes here.",
+      "image": {
+        "src": "/content/images/folk-003/c01.webp",
+        "alt": "Plain-language description of the chapter-one illustration."
+      },
+      "audio": {
+        "src": "/content/audio/folk-003/c01.mp3",
+        "durationSec": 18
+      }
+    },
+    {
+      "id": "folk-003-c02",
+      "order": 2,
+      "title": "Setup",
+      "text": "Exact narration for chapter two goes here.",
+      "image": {
+        "src": "/content/images/folk-003/c02.webp",
+        "alt": "Plain-language description of the chapter-two illustration."
+      },
+      "audio": {
+        "src": "/content/audio/folk-003/c02.mp3",
+        "durationSec": 18
+      }
+    }
+  ],
+  "parentCard": {
+    "prompts": [
+      "First open-ended reflection question.",
+      "Second open-ended reflection question."
+    ],
+    "tip": "One short, practical facilitation tip for the parent.",
+    "watchOut": "One common lecturing or framing trap to avoid."
+  },
+  "missions": [
+    {
+      "id": "folk-003-mission-a",
+      "variant": "A",
+      "text": "One optional, concrete household-scale mission.",
+      "expiresAfterHours": 24
+    },
+    {
+      "id": "folk-003-mission-b",
+      "variant": "B",
+      "text": "An alternative optional, concrete household-scale mission.",
+      "expiresAfterHours": 24
+    }
+  ]
+}

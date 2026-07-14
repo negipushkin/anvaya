@@ -1,0 +1,92 @@
+{
+  "schemaVersion": "1.0",
+  "storyId": "pancha-002",
+  "version": "1.0.0",
+  "status": "published",
+  "title": "The Monkey and the Crocodile",
+  "tradition": "Panchatantra",
+  "value": "Wisdom",
+  "ageBand": "5-8",
+  "estimatedDurationSec": 500,
+  "description": "A monkey, a crocodile, and a moment that tests everything. About 5 minutes reading, 5 minutes talking.",
+  "chapters": [
+    {
+      "id": "pancha-002-c01",
+      "order": 1,
+      "title": "Opening",
+      "text": "On the bank of a wide, slow river stood a great jamun tree, heavy with dark purple fruit. High in its branches lived a young monkey, who spent his days climbing, swinging, and eating the sweetest jamuns in the forest.",
+      "image": { "src": "/content/images/pancha-002/c01.webp", "alt": "A young monkey rests in the branches of a jamun tree above a wide river." }
+    },
+    {
+      "id": "pancha-002-c02",
+      "order": 2,
+      "title": "Setup",
+      "text": "One afternoon, a crocodile came to rest under the tree. The monkey, who was kind, tossed him a few jamuns to try. The crocodile had never tasted anything so sweet. He came back the next day, and the next, and soon the two became friends.",
+      "image": { "src": "/content/images/pancha-002/c02.webp", "alt": "The monkey tosses jamuns down to a crocodile at the river's edge." }
+    },
+    {
+      "id": "pancha-002-c03",
+      "order": 3,
+      "title": "Inciting",
+      "text": "The crocodile carried some jamuns home to his wife. She loved them — but a strange, dark thought crept into her mind. ‘If the fruit is this sweet,’ she said, ‘imagine how sweet the monkey's heart must be. Bring it to me.’",
+      "image": { "src": "/content/images/pancha-002/c03.webp", "alt": "The crocodile's wife tastes a jamun by candlelight, her expression turning cunning." }
+    },
+    {
+      "id": "pancha-002-c04",
+      "order": 4,
+      "title": "First attempt",
+      "text": "The crocodile did not want to. But his wife would not let it go. So the next day, he told the monkey, ‘My wife has invited you for a feast. Climb onto my back and I will carry you across the river.’ The trusting monkey agreed.",
+      "image": { "src": "/content/images/pancha-002/c04.webp", "alt": "The monkey climbs onto the crocodile's back at the riverbank." }
+    },
+    {
+      "id": "pancha-002-c05",
+      "order": 5,
+      "title": "Complication",
+      "text": "Halfway across the deep, wide river, the crocodile stopped. ‘My friend,’ he said, ‘I must tell you the truth. My wife wants to eat your heart.’ The monkey's blood turned cold. He was far from any tree. He could not swim. He was trapped.",
+      "image": { "src": "/content/images/pancha-002/c05.webp", "alt": "Halfway across the river, the monkey freezes as the crocodile speaks." }
+    },
+    {
+      "id": "pancha-002-c06",
+      "order": 6,
+      "title": "Turn",
+      "text": "But the monkey did not panic. He took a slow breath, and his mind began to work. ‘Oh dear friend,’ he said cheerfully, ‘why didn't you tell me sooner? Monkeys never carry their hearts with them. Mine is hanging safely in the jamun tree. Let us go back and fetch it.’",
+      "image": { "src": "/content/images/pancha-002/c06.webp", "alt": "The monkey speaks calmly on the crocodile's back, his mind at work." }
+    },
+    {
+      "id": "pancha-002-c07",
+      "order": 7,
+      "title": "Resolution",
+      "text": "The foolish crocodile believed him and turned around. The moment they reached the bank, the monkey leapt high into the branches of his tree, safe at last. ‘You may go home now,’ he called down. ‘And tell your wife that monkeys keep their hearts, and their wits, exactly where they belong.’",
+      "image": { "src": "/content/images/pancha-002/c07.webp", "alt": "The monkey leaps to safety back into the branches of the jamun tree." }
+    },
+    {
+      "id": "pancha-002-c08",
+      "order": 8,
+      "title": "Landing",
+      "text": "The crocodile swam away in silence. The monkey sat quietly among the leaves, his heart still beating. He had learned something that afternoon — that a kind heart is a gift, but a thinking mind is what keeps it safe.",
+      "image": { "src": "/content/images/pancha-002/c08.webp", "alt": "The monkey sits peacefully among the jamun leaves as the crocodile swims away." }
+    }
+  ],
+  "parentCard": {
+    "prompts": [
+      "The monkey was scared, but he didn't show it. Why do you think he stayed calm?",
+      "When has staying calm helped you think of something you would have missed if you panicked?"
+    ],
+    "tip": "Small examples from your own day work better than big lessons. Share yours first if your child is stuck.",
+    "watchOut": "Making it about ‘never trust anyone.’ The story isn't about that."
+  },
+  "missions": [
+    {
+      "id": "pancha-002-mission-a",
+      "variant": "A",
+      "text": "The next time you feel a big feeling today — surprise, upset, or worry — take three slow breaths before you say anything. See what you notice.",
+      "expiresAfterHours": 24
+    },
+    {
+      "id": "pancha-002-mission-b",
+      "variant": "B",
+      "text": "Think of one time this week when you knew someone was being unfair, but you handled it with your mind instead of a fight. Tell us about it at bedtime.",
+      "expiresAfterHours": 24
+    }
+  ]
+}

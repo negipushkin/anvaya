@@ -1,0 +1,17 @@
+node_modules
+dist
+.piper
+.claude/settings.local.json
+
+# OS / editor cruft
+.DS_Store
+Thumbs.db
+.vscode
+.idea
+
+# logs
+*.log
+npm-debug.log*
+
+# vite/tsc caches
+node_modules/.tmp

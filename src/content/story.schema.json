@@ -1,0 +1,77 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://anvaya.app/schemas/story.schema.json",
+  "title": "Anvaya Story",
+  "type": "object",
+  "required": ["schemaVersion", "storyId", "version", "status", "title", "tradition", "value", "ageBand", "estimatedDurationSec", "description", "chapters", "parentCard", "missions"],
+  "properties": {
+    "schemaVersion": { "const": "1.0" },
+    "storyId": { "type": "string", "pattern": "^[a-z]+-[0-9]{3}$" },
+    "version": { "type": "string", "pattern": "^[0-9]+\\.[0-9]+\\.[0-9]+$" },
+    "status": { "enum": ["draft", "in_review", "published", "archived"] },
+    "title": { "type": "string", "minLength": 1 },
+    "tradition": { "type": "string", "minLength": 1 },
+    "value": { "enum": ["Wisdom", "Resilience", "Empathy", "Honesty", "Courage", "Gratitude", "Patience", "Fairness"] },
+    "ageBand": { "const": "5-8" },
+    "estimatedDurationSec": { "type": "integer", "minimum": 60 },
+    "description": { "type": "string", "minLength": 1 },
+    "chapters": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/chapter" }
+    },
+    "parentCard": { "$ref": "#/$defs/parentCard" },
+    "missions": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "$ref": "#/$defs/mission" }
+    }
+  },
+  "$defs": {
+    "chapter": {
+      "type": "object",
+      "required": ["id", "order", "title", "text", "image"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z]+-[0-9]{3}-c[0-9]{2}$" },
+        "order": { "type": "integer", "minimum": 1 },
+        "title": { "type": "string", "minLength": 1 },
+        "text": { "type": "string", "minLength": 1 },
+        "image": {
+          "type": "object",
+          "required": ["src", "alt"],
+          "properties": {
+            "src": { "type": "string", "pattern": "^/content/images/.+\\.(webp|avif|jpg|jpeg|png)$" },
+            "alt": { "type": "string", "minLength": 1 }
+          }
+        },
+        "audio": {
+          "type": "object",
+          "required": ["src", "durationSec"],
+          "properties": {
+            "src": { "type": "string", "pattern": "^/content/audio/.+\\.(mp3|m4a|ogg|wav)$" },
+            "durationSec": { "type": "number", "exclusiveMinimum": 0 }
+          }
+        }
+      }
+    },
+    "parentCard": {
+      "type": "object",
+      "required": ["prompts", "tip", "watchOut"],
+      "properties": {
+        "prompts": { "type": "array", "minItems": 2, "maxItems": 3, "items": { "type": "string", "minLength": 1 } },
+        "tip": { "type": "string", "minLength": 1 },
+        "watchOut": { "type": "string", "minLength": 1 }
+      }
+    },
+    "mission": {
+      "type": "object",
+      "required": ["id", "variant", "text", "expiresAfterHours"],
+      "properties": {
+        "id": { "type": "string", "pattern": "^[a-z]+-[0-9]{3}-mission-[a-z]$" },
+        "variant": { "type": "string", "pattern": "^[A-Z]$" },
+        "text": { "type": "string", "minLength": 1 },
+        "expiresAfterHours": { "type": "integer", "minimum": 1, "maximum": 168 }
+      }
+    }
+  }
+}
