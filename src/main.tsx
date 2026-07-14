@@ -10,6 +10,12 @@ type ReadingMode = 'parent' | 'aloud'
 const journalKey = 'anvaya-journal-v1'
 const hideBrokenImage = (event: React.SyntheticEvent<HTMLImageElement>) => { event.currentTarget.style.visibility = 'hidden' }
 
+const IconChevronLeft = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+const IconChevronRight = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6" /></svg>
+const IconClose = () => <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12" /></svg>
+const IconJournal = () => <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M5 3h12a2 2 0 0 1 2 2v16l-8-4-8 4V5a2 2 0 0 1 2-2z" /></svg>
+const IconPlay = () => <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z" /></svg>
+
 function App() {
   const [screen, setScreen] = useState<Screen>('login')
   const [storyId, setStoryId] = useState<string>(stories[0].id)
@@ -134,33 +140,33 @@ function App() {
     const isFirst = chapter === 0
     const isLast = chapter === story.chapters.length - 1
     return <main className="reader">
-      <button className="reader-close" onClick={() => setScreen('board')} aria-label="End story">×</button>
+      <button className="reader-close" onClick={() => setScreen('board')} aria-label="End story"><IconClose /></button>
       <div className="dots" aria-label={`Chapter ${chapter + 1} of ${story.chapters.length}`}>{story.chapters.map((item, index) => <i key={item.id} className={index <= chapter ? 'active' : ''} />)}</div>
-      {mode === 'aloud' && paused && <button className="paused-badge" onClick={() => setPaused(false)} aria-label="Resume Read to Me">▶ Read to Me paused — tap to resume</button>}
+      {mode === 'aloud' && paused && <button className="paused-badge" onClick={() => setPaused(false)} aria-label="Resume Read to Me"><IconPlay /> Read to Me paused — tap to resume</button>}
       <article className="reader-card">
         <div className="scene reader-scene"><img src={current.image.src} alt={current.image.alt} onError={hideBrokenImage} /></div>
         <p className="narration">{current.text}</p>
       </article>
       <div className="reader-nav">
-        <button className={`nav-arrow ${isFirst ? 'hidden' : ''}`} onClick={goPrev} aria-label="Previous chapter" aria-hidden={isFirst}>‹</button>
+        <button className={`nav-arrow ${isFirst ? 'hidden' : ''}`} onClick={goPrev} aria-label="Previous chapter" aria-hidden={isFirst}><IconChevronLeft /></button>
         {mode === 'aloud' && !paused && <div className="wave" ref={barsRef} aria-label="Narration playing">{Array.from({ length: 16 }).map((_, i) => <b key={i} />)}</div>}
         {isLast
-          ? <button className="nav-continue" onClick={() => { pauseForManualNav(); setScreen('reflect') }}>Continue to Reflect →</button>
-          : <button className="nav-arrow" onClick={goNext} aria-label="Next chapter">›</button>}
+          ? <button className="nav-continue" onClick={() => { pauseForManualNav(); setScreen('reflect') }}>Continue to Reflect <IconChevronRight /></button>
+          : <button className="nav-arrow" onClick={goNext} aria-label="Next chapter"><IconChevronRight /></button>}
       </div>
     </main>
   }
 
   return <main className="app-shell">
     {screen === 'login' && <section className="page login">
-      <div className="wordmark login-mark">Anvaya</div>
-      <div className="scene login-hero"><img src="/hero.png" alt="A parent-child ritual, one story at a time" onError={hideBrokenImage} /></div>
+      <div className="wordmark">Anvaya</div>
+      <div className="login-hero"><img src="/hero.png" alt="A parent-child ritual, one story at a time" onError={hideBrokenImage} /></div>
       <p className="login-tag">A story, a talk, a small act — every week.</p>
       <button className="primary" onClick={() => setScreen('board')}>Get Started</button>
     </section>}
 
     {screen === 'board' && <section className="page board">
-      <header><div className="wordmark">Anvaya</div><button className="icon-button" onClick={() => setScreen('journal')} aria-label="Open Value Journal">⌑</button></header>
+      <header><div className="wordmark">Anvaya</div><button className="icon-button" onClick={() => setScreen('journal')} aria-label="Open Value Journal"><IconJournal /></button></header>
       <span className="eyebrow">STORY BOARD</span>
       <h1>Choose today's story</h1>
       <p className="muted">Sit together. Pick one. About 15 minutes.</p>
@@ -176,7 +182,7 @@ function App() {
     </section>}
 
     {screen === 'parent-card' && <section className="page parent-card">
-      <header><button className="back" onClick={() => setScreen('board')}>‹</button><strong>Parent Card</strong><button className="back" onClick={() => setScreen('board')}>×</button></header>
+      <header><button className="back" onClick={() => setScreen('board')} aria-label="Back"><IconChevronLeft /></button><strong>Parent Card</strong><button className="back" onClick={() => setScreen('board')} aria-label="Close"><IconClose /></button></header>
       <article className="paper-card"><span className="eyebrow">TODAY'S VALUE</span><h2>{story.value}</h2><span className="eyebrow">TWO THINGS TO ASK</span>{story.prompts.map((prompt) => <p className="prompt" key={prompt}>{prompt}</p>)}<span className="eyebrow">ONE TIP</span><p>{story.tip}</p><span className="eyebrow">WATCH OUT FOR</span><p>{story.watchOut}</p></article>
       <div className="sticky-actions">
         <div className="mode-picker" role="radiogroup" aria-label="Reading mode">
@@ -188,13 +194,13 @@ function App() {
       </div>
     </section>}
 
-    {screen === 'reflect' && <section className="page reflect"><div className="scene closing"><span>{story.chapters[story.chapters.length - 1].image.alt}</span></div><h1>Now it's your turn to talk.</h1><p className="muted">Take your time with these. There are no wrong answers.</p>{story.prompts.map((prompt) => <p className="prompt" key={prompt}>{prompt}</p>)}<button className="tip" onClick={() => setTipOpen(!tipOpen)}>One tip if you get stuck <span>{tipOpen ? '−' : '+'}</span></button>{tipOpen && <p className="tip-copy">{story.tip}</p>}<div className="sticky-actions"><button className="primary" onClick={() => setScreen('mission')}>We're Done Talking</button></div></section>}
+    {screen === 'reflect' && <section className="page reflect"><div className="closing"><span>{story.chapters[story.chapters.length - 1].image.alt}</span></div><h1>Now it's your turn to talk.</h1><p className="muted">Take your time with these. There are no wrong answers.</p>{story.prompts.map((prompt) => <p className="prompt" key={prompt}>{prompt}</p>)}<button className="tip" onClick={() => setTipOpen(!tipOpen)}>One tip if you get stuck <span>{tipOpen ? '−' : '+'}</span></button>{tipOpen && <p className="tip-copy">{story.tip}</p>}<div className="sticky-actions"><button className="primary" onClick={() => setScreen('mission')}>We're Done Talking</button></div></section>}
 
     {screen === 'mission' && <section className="page mission"><span className="badge centered">{story.value}</span><article className="mission-card"><span className="eyebrow terracotta">MICRO-MISSION</span><p className="prompt">{story.mission}</p><p className="muted">◷ You have 24 hours. No pressure.</p></article><label className="note-label">Optional note <textarea value={note} onChange={(event) => setNote(event.target.value)} placeholder="What happened?" /></label><button className="primary" onClick={() => completeMission('logged')}>Log It Now</button><button className="secondary" onClick={() => completeMission('later')}>Log It Later</button><button className="ghost" onClick={() => completeMission('skipped')}>Skip This One</button><p className="fine-print">Skipping is okay. Not every day needs a mission.</p></section>}
 
     {screen === 'close' && <section className="page close"><div className="map"><i className="node unlocked" /><i className="node unlocked" /><i className="node unlocked" /><i className="node" /><i className="node" /></div><h1>See you next time.</h1><p className="muted">{status === 'logged' ? "Great — you've added to your Value Journal." : status === 'later' ? "We've saved the mission. You can log it from Parent Mode when it's done." : "No mission today. Come back for the next story whenever you're ready."}</p><button className="ghost close-button" onClick={() => setScreen('board')}>Close</button></section>}
 
-    {screen === 'journal' && <section className="page journal"><header><button className="back" onClick={() => setScreen('board')}>‹</button><strong>Value Journal</strong><span /></header><span className="badge">Wisdom</span><h1>Your family's small acts</h1>{journals.length ? <div className="journal-list">{journals.map((entry, index) => <article key={`${entry}-${index}`}><span className="eyebrow">WISDOM</span><p>{entry}</p></article>)}</div> : <div className="empty"><div className="scene"><span>Your first mission will land here.</span></div><p>Complete a mission to begin your family journal.</p></div>}</section>}
+    {screen === 'journal' && <section className="page journal"><header><button className="back" onClick={() => setScreen('board')} aria-label="Back"><IconChevronLeft /></button><strong>Value Journal</strong><span /></header><span className="badge">Wisdom</span><h1>Your family's small acts</h1>{journals.length ? <div className="journal-list">{journals.map((entry, index) => <article key={`${entry}-${index}`}><span className="eyebrow">WISDOM</span><p>{entry}</p></article>)}</div> : <div className="empty"><p>Your first mission will land here.</p><p className="muted">Complete a mission to begin your family journal.</p></div>}</section>}
   </main>
 }
 
